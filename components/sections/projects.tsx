@@ -1,0 +1,198 @@
+"use client"
+
+import { useState, useCallback, useEffect } from "react"
+import { Button } from "@/components/ui/button"
+import { SectionHeading } from "@/components/ui/section-heading"
+import { PROJECTS, PROJECTS_CONTENT, type Project } from "@/lib/constants"
+import { ArrowLeft, ArrowRight, ExternalLink, Briefcase } from "lucide-react"
+import useEmblaCarousel from "embla-carousel-react"
+
+function GitHubIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+    </svg>
+  )
+}
+
+function ProjectCard({ project }: { project: Project }) {
+  return (
+    <div className="glass-card rounded-2xl overflow-hidden flex flex-col h-full min-h-[420px]">
+      <div className="h-44 sm:h-48 shrink-0 overflow-hidden bg-muted relative">
+        <img
+          src={project.image || "/placeholder.svg"}
+          alt={project.title}
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-card/80 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+      </div>
+      <div className="p-5 sm:p-6 flex flex-col flex-1 space-y-3">
+        <h3 className="font-semibold text-base sm:text-lg">{project.title}</h3>
+        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 flex-1">
+          {project.description}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {project.tags.slice(0, 4).map((tag) => (
+            <span key={tag} className="text-xs bg-primary/10 text-primary rounded-full px-2.5 py-1 font-medium">
+              {tag}
+            </span>
+          ))}
+          {project.tags.length > 4 && (
+            <span className="text-xs bg-secondary text-secondary-foreground rounded-full px-2.5 py-1">
+              +{project.tags.length - 4}
+            </span>
+          )}
+        </div>
+        <div className="flex gap-3 mt-auto pt-2">
+          {project.demoUrl && (
+          <Button size="sm" className="rounded-full flex-1 h-9 text-sm" asChild>
+            <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Demo
+            </a>
+          </Button>
+          )}
+
+         {project.githubUrl && (
+          <Button size="sm" variant="outline" className="rounded-full flex-1 h-9 text-sm" asChild>
+            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+              <GitHubIcon className="mr-1.5 h-3.5 w-3.5" /> Code
+            </a>
+          </Button>
+         )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export function Projects() {
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    align: 'start',
+    slidesToScroll: 1,
+    containScroll: 'trimSnaps',
+    dragFree: false,
+  })
+
+  const scrollPrev = useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
+
+  const scrollNext = useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
+
+  const scrollTo = useCallback(
+    (index: number) => {
+      if (emblaApi) emblaApi.scrollTo(index)
+    },
+    [emblaApi]
+  )
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+  }, [emblaApi])
+
+  const onInit = useCallback(() => {
+    if (!emblaApi) return
+    setScrollSnaps(emblaApi.scrollSnapList())
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) return
+    onInit()
+    onSelect()
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onInit)
+  }, [emblaApi, onInit, onSelect])
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        scrollPrev()
+      } else if (e.key === 'ArrowRight') {
+        scrollNext()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [scrollPrev, scrollNext])
+
+  return (
+    <section id="projects" className="section-spacing bg-muted/20">
+      <div className="section-container">
+        <SectionHeading title={PROJECTS_CONTENT.heading.title} subtitle={PROJECTS_CONTENT.heading.subtitle} />
+
+        <div className="content-spacing">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Briefcase className="h-4 w-4 text-primary" />
+              <h3 className="font-semibold">Projects | Built</h3>
+            </div>
+
+            {/* Carousel Navigation */}
+            <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={scrollPrev}
+              className="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
+              aria-label="Previous project"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={scrollNext}
+              className="w-9 h-9 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/30 transition-all"
+              aria-label="Next project"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+
+          {/* Embla Carousel - All Screens */}
+          <div className="py-4 -my-4">
+            <div className="overflow-hidden -mx-3" ref={emblaRef}>
+              <div className="flex py-2">
+                {PROJECTS.map((project) => (
+                  <div
+                    key={project.id}
+                    className="flex-none w-full sm:w-1/2 lg:w-1/3 min-w-0 px-3"
+                  >
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Carousel Dots */}
+        {scrollSnaps.length > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-8">
+              {scrollSnaps.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => scrollTo(idx)}
+                  className={`rounded-full transition-all ${
+                    selectedIndex === idx
+                      ? "w-6 h-2 bg-primary shadow-md shadow-primary/30"
+                      : "w-2 h-2 bg-border hover:bg-muted-foreground"
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+          </div>
+        )}
+      </div>
+      </div>
+    </section>
+  )
+}
