@@ -18,7 +18,7 @@ export function GitHubStats() {
   const [stats, setStats] = useState(fallbackStats)
 
   useEffect(() => {
-    fetch("https://api.github.com/users/uzairansari11")
+    fetch("https://api.github.com/users/shakeelahamad")
       .then((res) => res.json())
       .then((data) => {
         if (data?.public_repos) {

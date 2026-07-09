@@ -127,11 +127,11 @@ function ProjectCard({ project, onClick }: { project: ProjectHighlight; onClick:
       </p>
 
       {/* Metrics */}
-      {project.metrics && (
+      {project.metrics && project.metrics.length > 0 && (
         <div className="grid grid-cols-3 gap-4 mb-5">
           {project.metrics.map((m) => (
             <div key={m.label}>
-              <div className="text-xl font-bold mb-1">{m.value}</div>
+              <div className="text-xl font-bold mb-1">{m.value} </div>
               <div className="text-xs text-muted-foreground leading-tight">{m.label}</div>
             </div>
           ))}
