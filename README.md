@@ -45,4 +45,4 @@ To run this project locally, follow these steps.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/ShakeelAhamad/uzairansari11.github.io.git
+git clone https://github.com/ShakeelAhamad/Portfolio1.git
