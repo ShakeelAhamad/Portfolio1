@@ -36,7 +36,7 @@ This portfolio is built with:
 
 You can view the live portfolio here:
 
-[https://uzairansari11.vercel.app/](https://uzairansari11.vercel.app/)
+[https://portfolio-shakeel-eosin.vercel.app/](https://portfolio-shakeel-eosin.vercel.app/)
 
 ## Getting Started
 
