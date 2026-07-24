@@ -625,7 +625,7 @@ export const SKILL_CATEGORIES: SkillCategoryInterface[] = [
   {
     title: 'Backend',
     icon: 'Server',
-    skills: ['PHP','ASP.NET Core','Node.js', 'Express.js', 'REST APIs', 'JWT', 'RBAC', 'MySQL', 'MongoDB', 'SQL Server'],
+    skills: ['PHP','Laravel','CodeIgniter 3','ASP.NET Core','Node.js', 'Express.js', 'REST APIs', 'JWT', 'RBAC', 'MySQL', 'MongoDB', 'SQL Server'],
   },
   {
     title: 'Frontend',
