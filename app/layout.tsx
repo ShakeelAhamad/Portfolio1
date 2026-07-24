@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 export const metadata = {
   title: "Shakeel Ahamad | Senior PHP Laravel Developer | Backend Engineer ",
-  description: "Frontend Engineer & Full Stack Developer specializing in React, Next.js, Node.js, PostgreSQL and modern web technologies. 2.5+ years building enterprise-grade applications.",
+  description: "Senior PHP Laravel Developer | Backend Engineer specializing in PHP, Laravel, CodeIgniter , Next.js, Node.js, MySQL and modern web technologies. 5+ years building enterprise-grade applications.",
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
